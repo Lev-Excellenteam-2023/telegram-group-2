@@ -32,7 +32,7 @@ def handle_message() -> str:
 if __name__ == '__main__':
     requests.get(TELEGRAM_INIT_WEBHOOK_URL)
 
-    API_ENDPOINT: str = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setMyCommands"
+    api_endpoint_commands: str = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setMyCommands"
     new_commands: list[dict[str, str]] = [
         {"command": "start", "description": "Start the bot"},
         {"command": "clear", "description": "Clear history"}
