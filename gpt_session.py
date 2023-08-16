@@ -22,6 +22,8 @@ def call_openai_api(question: str, history="") -> str:
                                             max_tokens=MAX_TOKENS)
     return response.choices[0].text.strip()
 
+def check_and_filter_response(response: str):
+    return True
 
 def test():
     """
@@ -34,9 +36,9 @@ def test():
     history = ""
     while True:
         question = input("Enter your question\n")
-        req = call_openai_api(question, history)
-        history += f"user: {question}\nchat: {req}"
-        print(req)
+        response = call_openai_api(question, history)
+        history += f"user: {question}\nchat: {response}"
+        print(response)
 
 
 if __name__ == '__main__':
