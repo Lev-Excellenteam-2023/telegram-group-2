@@ -1,5 +1,5 @@
 import openai
-from consts import OPENAI_TOKEN, CHAT, MAX_TOKENS
+from Utils.consts import OPENAI_TOKEN, CHAT, MAX_TOKENS
 from prompts import FIRST_PROMPT, CONTINUE_PROMPT_PART_1, CONTINUE_PROMPT_PART_2
 
 openai.api_key = OPENAI_TOKEN

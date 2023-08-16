@@ -1,5 +1,5 @@
 from typing import List
-from consts import *
+from Utils.consts import *
 import requests
 from flask import Flask, request
 from requests import Response
