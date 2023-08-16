@@ -1,3 +1,4 @@
+from typing import List
 import firebase_admin
 from firebase_admin import credentials, db
 from firebase_admin.credentials import Certificate
@@ -43,9 +44,26 @@ class DatabaseManager:
         new_response_ref = new_message_ref.child('response')
         new_response_ref.set({'message': response})
 
+    def get_conversation_history(self, chat_id: str) -> List:
+        if not self.is_user_exist(chat_id):
+            raise ValueError('User does not exist')
+
+        user_ref = self.users_ref.child(chat_id)
+        conversation_ref = user_ref.child('conversation')
+
+        conversation_snapshot = conversation_ref.get()
+
+        sorted_messages = sorted(
+            conversation_snapshot.values(),
+            key=lambda x: x.get('timestamp', 0)
+        )
+
+        return sorted_messages
+
 
 if __name__ == '__main__':
     # testing
     my_db: DatabaseManager = DatabaseManager()
-    my_db.insert_user('1234567890')
-    my_db.add_message_to_user('1234567890', 'Hello', 'Hello user')
+    # my_db.insert_user('1234567890')
+    # my_db.add_message_to_user('1234567890', 'test', '123')
+    # print(my_db.get_conversation_history('1234567890'))
