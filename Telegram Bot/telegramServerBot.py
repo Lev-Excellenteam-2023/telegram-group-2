@@ -3,7 +3,7 @@ from consts import *
 import requests
 from flask import Flask, request
 from requests import Response
-from firebase_db import DatabaseManager
+from Database.firebase_db import DatabaseManager
 
 app: Flask = Flask(__name__)
 
