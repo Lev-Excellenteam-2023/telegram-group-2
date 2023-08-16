@@ -42,7 +42,7 @@ if __name__ == '__main__':
         "commands": new_commands
     }
 
-    requests.post(API_ENDPOINT, json=data)
+    requests.post(api_endpoint_commands, json=data)
 
     database_instance: DatabaseManager = DatabaseManager()
     app.run(port=5002, debug=True)
