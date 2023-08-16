@@ -1,15 +1,8 @@
 from typing import List
-from dotenv import load_dotenv
+from consts import *
 import requests
 from flask import Flask, request
 from requests import Response
-import os
-
-load_dotenv()
-OPENAI_TOKEN: str = os.getenv('OPENAI_TOKEN')
-TELEGRAM_TOKEN: str = os.getenv('TELEGRAM_TOKEN')
-NGROK_FORWARDING: str = os.getenv('NGROK_FORWARDING')
-TELEGRAM_INIT_WEBHOOK_URL: str = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook?url={NGROK_FORWARDING}'
 
 app: Flask = Flask(__name__)
 
