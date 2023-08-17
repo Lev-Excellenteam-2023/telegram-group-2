@@ -31,5 +31,18 @@ def handle_message() -> str:
 
 if __name__ == '__main__':
     requests.get(TELEGRAM_INIT_WEBHOOK_URL)
+
+    api_endpoint_commands: str = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setMyCommands"
+    new_commands: list[dict[str, str]] = [
+        {"command": "start", "description": "Start the bot"},
+        {"command": "clear", "description": "Clear history"}
+    ]
+
+    data: dict[str, list[dict[str, str]]] = {
+        "commands": new_commands
+    }
+
+    requests.post(api_endpoint_commands, json=data)
+
     database_instance: DatabaseManager = DatabaseManager()
     app.run(port=5002, debug=True)
