@@ -6,7 +6,7 @@ from prompts import FIRST_MESSAGES_DICT
 openai.api_key = OPENAI_TOKEN
 
 
-def call_openai_api(message: dict, history: List[dict]=None) -> str:
+def call_openai_api(message: dict, history: List[dict] = None) -> str:
     """
     Calls the OpenAI API to generate a response based on the provided question and optional conversation history.
 
@@ -21,4 +21,3 @@ def call_openai_api(message: dict, history: List[dict]=None) -> str:
                                             max_tokens=MAX_TOKENS)
 
     return response["choices"][0]["message"]["content"]
-
