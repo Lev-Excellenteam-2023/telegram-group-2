@@ -25,17 +25,23 @@ def handle_message(user_id: str, msg_text: str):
 
     if not USER_DB.is_user_exist(user_id):
         logger.info(f"User {user_id} does not exist. Starting new session.")
-        return START_SESSION_MSG
+        return START_SESSION_MSG,None
 
     user_history = USER_DB.get_conversation_history(user_id)
 
-    response = gpt.call_openai_api(msg_text, user_history)
-    logger.info(f"Bot response for user {user_id}: {response}")
+    response = get_res()#gpt.call_openai_api(msg_text, user_history)
 
-    USER_DB.add_message_to_user(user_id, msg_text, response)
+    response_to_user = response['response']
+    user_ans_option = response['options']
 
-    return response
+    logger.info(f"Bot response for user {user_id}: { response_to_user}")
 
+    USER_DB.add_message_to_user(user_id, msg_text,  response_to_user)
+
+    return response_to_user, user_ans_option
+
+def get_res():
+    return {'response': 'why?', 'options': ['yrt','fgdh']}
 
 def check_or_create_user(user_id: str):
     """
