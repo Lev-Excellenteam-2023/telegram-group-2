@@ -61,10 +61,17 @@ class DatabaseManager:
 
         return sorted_messages
 
+    def delete_user(self, chat_id: str) -> None:
+        if not self.is_user_exist(chat_id):
+            raise ValueError('User does not exist')
+
+        self.users_ref.child(chat_id).delete()
+
 
 if __name__ == '__main__':
     # testing
     my_db: DatabaseManager = DatabaseManager()
-    my_db.insert_user('1234567890')
+    # my_db.insert_user('1234567890')
     # my_db.add_message_to_user('1234567890', 'test', '123')
+    # my_db.delete_user("190800553")
     # print(my_db.get_conversation_history('1234567890'))
