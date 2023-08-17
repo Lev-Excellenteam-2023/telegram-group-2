@@ -35,7 +35,6 @@ class DatabaseManager:
     def add_message_to_user(self, chat_id: str, message: str, response: str) -> None:
         if not self.is_user_exist(chat_id):
             raise ValueError('User does not exist')
-
         user_ref = self.users_ref.child(chat_id)
         conversation_ref = user_ref.child('conversation')
 

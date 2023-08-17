@@ -1,48 +1,43 @@
-from typing import List
-from Utils.consts import *
-import requests
-from flask import Flask, request
-from requests import Response
-from Database.firebase_db import DatabaseManager
+import logging
+from telegram import ForceReply, Update
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from dotenv import load_dotenv
+from os import getenv
+from message_handler import handle_message
 
-app: Flask = Flask(__name__)
+load_dotenv()
 
+TOKEN = getenv('TELEGRAM_TOKEN')
 
-@app.route('/message', methods=["POST"])
-def handle_message() -> str:
-    if 'message' in request.get_json():
-        chat_id: str = str(request.get_json()['message']['chat']['id'])
-        my_message: List[str] = request.get_json()['message']['text'].strip().split(' ')
-    else:
-        return "Error"
-
-    if not database_instance.is_user_exist(chat_id):
-        database_instance.insert_user(chat_id)
-
-    text_response: str = my_message[0]
-
-    res: Response = requests.get(
-        f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage?chat_id={chat_id}&text={text_response}')
-
-    database_instance.add_message_to_user(chat_id, my_message[0], text_response)
-
-    return "success" if res.ok else "Error"
+async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
-if __name__ == '__main__':
-    requests.get(TELEGRAM_INIT_WEBHOOK_URL)
 
-    api_endpoint_commands: str = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setMyCommands"
-    new_commands: list[dict[str, str]] = [
-        {"command": "start", "description": "Start the bot"},
-        {"command": "clear", "description": "Clear history"}
-    ]
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("Help!")
 
-    data: dict[str, list[dict[str, str]]] = {
-        "commands": new_commands
-    }
 
-    requests.post(api_endpoint_commands, json=data)
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
-    database_instance: DatabaseManager = DatabaseManager()
-    app.run(port=5002, debug=True)
+    user_id_str = str(update.effective_user.id)
+    return_massege = handle_message(user_id_str, update.message.text)
+
+    await update.message.reply_text(return_massege)
+
+
+def main() -> None:
+
+    application = Application.builder().token(TOKEN).build()
+
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
+
+    # on non command i.e message - echo the message on Telegram
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+
+    # Run the bot until the user presses Ctrl-C
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
+
+
+if __name__ == "__main__":
+    main()
