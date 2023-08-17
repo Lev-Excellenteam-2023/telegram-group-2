@@ -11,5 +11,5 @@ PRESENTATION_OF_BOT = "Hello! I'm a bot for personalized planting advice. I help
                       "your location, preferences, and experience. I also provide care tips for successful growth. " \
                       "How can I help you today?"
 CHAT = 'gpt-3.5-turbo-16k'
-MAX_TOKENS = 60
+MAX_TOKENS = 80
 
