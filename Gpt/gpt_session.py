@@ -24,11 +24,12 @@ def call_openai_api(message: str, history: List) -> str:
 
 
 def response_bot(message: str, history: List) -> dict:
-    total_response = call_openai_api(message, history)
-    if total_response.__contains__("Question"):
-        total_response = total_response.split("Question")[-1]
+    total_response = call_openai_api(message, history).lower().strip()
+
+    if total_response.__contains__("question"):
+        total_response = total_response.split("question")[-1]
         response = total_response.split("\n")[0]
-        options = [option for option in total_response.split("\n")[1:] if option != "\n"]
+        options = [option for option in total_response.split("\n")[1:] if option != "\n" and option != " "]
         return {"response": response, "options": options}
 
     else:
