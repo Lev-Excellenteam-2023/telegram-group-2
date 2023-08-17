@@ -1,7 +1,7 @@
 from typing import List
 import openai
 from Utils.consts import OPENAI_TOKEN, CHAT, MAX_TOKENS
-from prompts import FIRST_MESSAGES_DICT
+from Gpt.prompts import FIRST_MESSAGES_DICT
 
 openai.api_key = OPENAI_TOKEN
 

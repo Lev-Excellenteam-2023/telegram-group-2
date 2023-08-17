@@ -1,12 +1,14 @@
 import logging
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-from dotenv import load_dotenv
-from os import getenv
-from message_handlers import handle_message, delete_user_history
+from message_handlers import handle_message, delete_user_history, start_session
+from Utils.consts import TELEGRAM_TOKEN
 
-load_dotenv()
-TOKEN = getenv('TELEGRAM_TOKEN')
+
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id_str = str(update.effective_user.id)
+    return_message = start_session(user_id_str)
+    await update.message.reply_text(return_message)
 
 
 async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -27,8 +29,9 @@ async def get_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 def main() -> None:
-    application = Application.builder().token(TOKEN).build()
+    application = Application.builder().token(TELEGRAM_TOKEN).build()
 
+    application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("clear", clear_command))
 
