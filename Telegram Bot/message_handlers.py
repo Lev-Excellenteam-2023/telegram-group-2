@@ -25,23 +25,21 @@ def handle_message(user_id: str, msg_text: str):
 
     if not USER_DB.is_user_exist(user_id):
         logger.info(f"User {user_id} does not exist. Starting new session.")
-        return START_SESSION_MSG,None
+        return START_SESSION_MSG, None
 
     user_history = USER_DB.get_conversation_history(user_id)
 
-    response = get_res()#gpt.call_openai_api(msg_text, user_history)
+    response = gpt.response_bot(msg_text, user_history)
 
     response_to_user = response['response']
     user_ans_option = response['options']
 
-    logger.info(f"Bot response for user {user_id}: { response_to_user}")
+    logger.info(f"Bot response for user {user_id}: {response_to_user}")
 
-    USER_DB.add_message_to_user(user_id, msg_text,  response_to_user)
+    USER_DB.add_message_to_user(user_id, msg_text, response_to_user)
 
     return response_to_user, user_ans_option
 
-def get_res():
-    return {'response': 'why?', 'options': ['yrt','fgdh']}
 
 def check_or_create_user(user_id: str):
     """
@@ -99,4 +97,3 @@ def delete_user_history(user_id: str):
 
     logger.error(f"try delete user id {user_id} that dont exist")
     return START_SESSION_MSG
-
