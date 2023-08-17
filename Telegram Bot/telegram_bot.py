@@ -10,9 +10,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     return_message = start_session(user_id_str)
     reply_keyboard = [["Boy", "Girl", "Other"]]
 
-    await update.message.reply_text(return_message,reply_markup=ReplyKeyboardMarkup(
-            reply_keyboard, one_time_keyboard=False,resize_keyboard=True, input_field_placeholder="Boy or Girl?"
-        ))
+    await update.message.reply_text(return_message, reply_markup=ReplyKeyboardMarkup(
+        reply_keyboard, one_time_keyboard=False, resize_keyboard=True, input_field_placeholder="Boy or Girl?"
+    ))
 
     reply_keyboard = [["Boy", "Girl", "Other"]]
 
