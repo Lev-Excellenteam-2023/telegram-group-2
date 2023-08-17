@@ -18,7 +18,5 @@ def call_openai_api(message: str, history: List) -> str:
     history.insert(0, FIRST_MESSAGES_DICT)
     history.append(dict_message)
     response = openai.ChatCompletion.create(model=CHAT,
-                                            messages=history,
-                                            max_tokens=MAX_TOKENS)
-
+                                            messages=history)
     return response["choices"][0]["message"]["content"]
