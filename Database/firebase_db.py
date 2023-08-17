@@ -4,6 +4,7 @@ from firebase_admin import credentials, db
 from firebase_admin.credentials import Certificate
 from firebase_admin.db import Reference
 import time
+from Utils.consts import DATABASE_URL
 
 
 class DatabaseManager:
@@ -12,7 +13,7 @@ class DatabaseManager:
     def __init__(self):
         cred: Certificate = credentials.Certificate("./serviceAccountKey.json")
         firebase_admin.initialize_app(cred, options={
-            'databaseURL': 'https://telegram-bot-682db-default-rtdb.europe-west1.firebasedatabase.app'
+            'databaseURL': f'{DATABASE_URL}'
         })
 
         self.users_ref = db.reference('users')
@@ -64,6 +65,6 @@ class DatabaseManager:
 if __name__ == '__main__':
     # testing
     my_db: DatabaseManager = DatabaseManager()
-    # my_db.insert_user('1234567890')
+    my_db.insert_user('1234567890')
     # my_db.add_message_to_user('1234567890', 'test', '123')
     # print(my_db.get_conversation_history('1234567890'))
