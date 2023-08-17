@@ -11,6 +11,7 @@ class DatabaseManager:
     """
     This class is responsible for managing the database
     """
+
     users_ref: Reference
 
     def __init__(self):
@@ -111,12 +112,3 @@ class DatabaseManager:
             raise ValueError('User does not exist')
 
         self.users_ref.child(chat_id).delete()
-
-
-if __name__ == '__main__':
-    # testing
-    my_db: DatabaseManager = DatabaseManager()
-    # my_db.insert_user('1234567890')
-    # my_db.add_message_to_user('1234567890', 'test', '123')
-    # my_db.delete_user("190800553")
-    # print(my_db.get_conversation_history('190800553'))
