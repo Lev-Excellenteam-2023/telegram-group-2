@@ -22,25 +22,3 @@ def call_openai_api(message: dict, history: List[dict]=None) -> str:
 
     return response["choices"][0]["message"]["content"]
 
-
-
-#
-# def test():
-#     """
-#     Performs a conversation loop where the user can input questions and receive responses.
-#
-#     The conversation history is maintained and updated with each user interaction.
-#
-#     :return: None
-#     """
-#     history = []
-#     while True:
-#         message = input("Write your message\n")
-#         dict_message = {"role": "user", "content": message}
-#         response = call_openai_api(dict_message, history)
-#         print(response)
-#         history += [{"role": "user", "content": message}, {"role": "assistant", "content": response}]
-#
-#
-# if __name__ == '__main__':
-#     test()
