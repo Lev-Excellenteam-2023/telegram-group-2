@@ -1,5 +1,5 @@
 import logging
-from telegram import ForceReply, Update
+from telegram import ForceReply, Update, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 from message_handlers import handle_message, delete_user_history, start_session
 from Utils.consts import TELEGRAM_TOKEN
@@ -8,7 +8,13 @@ from Utils.consts import TELEGRAM_TOKEN
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id_str = str(update.effective_user.id)
     return_message = start_session(user_id_str)
-    await update.message.reply_text(return_message)
+    reply_keyboard = [["Boy", "Girl", "Other"]]
+
+    await update.message.reply_text(return_message,reply_markup=ReplyKeyboardMarkup(
+            reply_keyboard, one_time_keyboard=False,resize_keyboard=True, input_field_placeholder="Boy or Girl?"
+        ))
+
+    reply_keyboard = [["Boy", "Girl", "Other"]]
 
 
 async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -37,7 +43,6 @@ def main() -> None:
 
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_message))
 
-    # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
