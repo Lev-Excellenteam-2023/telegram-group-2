@@ -63,7 +63,6 @@ class DatabaseManager:
 
         if not self.is_user_exist(chat_id):
             raise ValueError('User does not exist')
-
         user_ref = self.users_ref.child(chat_id)
         conversation_ref = user_ref.child('conversation')
 

@@ -1,48 +1,50 @@
-from typing import List
-from Utils.consts import *
-import requests
-from flask import Flask, request
-from requests import Response
-from Database.firebase_db import DatabaseManager
-
-app: Flask = Flask(__name__)
+import logging
+from telegram import ForceReply, Update, ReplyKeyboardMarkup
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from message_handlers import handle_message, delete_user_history, start_session
+from Utils.consts import TELEGRAM_TOKEN
 
 
-@app.route('/message', methods=["POST"])
-def handle_message() -> str:
-    if 'message' in request.get_json():
-        chat_id: str = str(request.get_json()['message']['chat']['id'])
-        my_message: List[str] = request.get_json()['message']['text'].strip().split(' ')
-    else:
-        return "Error"
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id_str = str(update.effective_user.id)
+    return_message = start_session(user_id_str)
+    reply_keyboard = [["Boy", "Girl", "Other"]]
 
-    if not database_instance.is_user_exist(chat_id):
-        database_instance.insert_user(chat_id)
+    await update.message.reply_text(return_message, reply_markup=ReplyKeyboardMarkup(
+        reply_keyboard, one_time_keyboard=False, resize_keyboard=True, input_field_placeholder="Boy or Girl?"
+    ))
 
-    text_response: str = my_message[0]
-
-    res: Response = requests.get(
-        f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage?chat_id={chat_id}&text={text_response}')
-
-    database_instance.add_message_to_user(chat_id, my_message[0], text_response)
-
-    return "success" if res.ok else "Error"
+    reply_keyboard = [["Boy", "Girl", "Other"]]
 
 
-if __name__ == '__main__':
-    requests.get(TELEGRAM_INIT_WEBHOOK_URL)
+async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id_str = str(update.effective_user.id)
+    return_message = delete_user_history(user_id_str)
+    await update.message.reply_text(return_message)
 
-    api_endpoint_commands: str = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setMyCommands"
-    new_commands: list[dict[str, str]] = [
-        {"command": "start", "description": "Start the bot"},
-        {"command": "clear", "description": "Clear history"}
-    ]
 
-    data: dict[str, list[dict[str, str]]] = {
-        "commands": new_commands
-    }
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("Help!")
 
-    requests.post(api_endpoint_commands, json=data)
 
-    database_instance: DatabaseManager = DatabaseManager()
-    app.run(port=5002, debug=True)
+async def get_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id_str = str(update.effective_user.id)
+    return_message = handle_message(user_id_str, update.message.text)
+
+    await update.message.reply_text(return_message)
+
+
+def main() -> None:
+    application = Application.builder().token(TELEGRAM_TOKEN).build()
+
+    application.add_handler(CommandHandler("start", start_command))
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("clear", clear_command))
+
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_message))
+
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
+
+
+if __name__ == "__main__":
+    main()
