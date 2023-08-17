@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 import firebase_admin
 from firebase_admin import credentials, db
 from firebase_admin.credentials import Certificate
@@ -59,7 +59,13 @@ class DatabaseManager:
             key=lambda x: x.get('timestamp', 0)
         )
 
-        return sorted_messages
+        history: List[Dict[str, str]] = []
+
+        for conversation in sorted_messages[1:]:
+            history += [{'role': 'user', 'content': conversation['message']}]
+            history += [{'role': 'assistant', 'content': conversation['response']['message']}]
+
+        return history
 
     def delete_user(self, chat_id: str) -> None:
         if not self.is_user_exist(chat_id):
@@ -74,4 +80,4 @@ if __name__ == '__main__':
     # my_db.insert_user('1234567890')
     # my_db.add_message_to_user('1234567890', 'test', '123')
     # my_db.delete_user("190800553")
-    # print(my_db.get_conversation_history('1234567890'))
+    # print(my_db.get_conversation_history('190800553'))
