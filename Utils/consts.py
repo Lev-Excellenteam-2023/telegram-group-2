@@ -8,5 +8,5 @@ NGROK_FORWARDING: str = os.getenv('NGROK_FORWARDING')
 DATABASE_URL: str = os.getenv('DATABASE_URL')
 TELEGRAM_INIT_WEBHOOK_URL: str = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook?url={NGROK_FORWARDING}'
 CHAT = 'gpt-3.5-turbo-16k'
-MAX_TOKENS = 60
+MAX_TOKENS = 80
 
