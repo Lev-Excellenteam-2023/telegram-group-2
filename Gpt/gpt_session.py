@@ -25,11 +25,17 @@ def call_openai_api(message: str, history: List) -> str:
 
 def response_bot(message: str, history: List) -> dict:
     total_response = call_openai_api(message, history).lower().strip()
+    print(total_response)
 
-    if total_response.__contains__("question"):
+    if not total_response.__contains__("feel free"):
         total_response = total_response.split("question")[-1]
         response = total_response.split("\n")[0]
-        options = [option for option in total_response.split("\n")[1:] if option != "\n" and option != " "]
+        options = [option for option in total_response.split("\n")[1:]
+                   if option != "\n" and option != " " and (option.startswith('1') or option.startswith('2')
+                                                            or option.startswith('3') or option.startswith('4')
+                                                            or option.startswith('a') or option.startswith('b')
+                                                            or option.startswith('c') or option.startswith('d')
+                                                            or option.startswith("-"))]
         return {"response": response, "options": options}
 
     else:
